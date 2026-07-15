@@ -1,0 +1,41 @@
+{
+  "name": "todo-lens",
+  "displayName": "todo-lens",
+  "description": "List and jump to TODO/FIXME/HACK/BUG/NOTE comments in the current file, from a sidebar tree and a status-bar counter.",
+  "version": "1.0.0",
+  "publisher": "juninmd",
+  "license": "MIT",
+  "engines": { "vscode": "^1.75.0" },
+  "categories": ["Other"],
+  "main": "./extension.js",
+  "activationEvents": ["onStartupFinished"],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        { "id": "todoLens", "title": "todo-lens", "icon": "media/icon.svg" }
+      ]
+    },
+    "views": {
+      "todoLens": [{ "id": "todoLensView", "name": "TODOs no arquivo" }]
+    },
+    "commands": [
+      { "command": "todoLens.refresh", "title": "todo-lens: Atualizar" }
+    ],
+    "configuration": {
+      "title": "todo-lens",
+      "properties": {
+        "todoLens.tags": {
+          "type": "array",
+          "default": ["TODO", "FIXME", "HACK", "XXX", "BUG", "NOTE"],
+          "description": "Tags a procurar."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}
