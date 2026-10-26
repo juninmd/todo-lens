@@ -8,7 +8,9 @@ const DEFAULT_TAGS = ["TODO", "FIXME", "HACK", "XXX", "BUG", "NOTE"];
  * { tag, line (0-based), col (0-based), message }.
  */
 function scanText(text, tags = DEFAULT_TAGS) {
-  const safe = tags.filter((t) => /^[A-Z0-9]+$/i.test(t));
+  // A non-array setting (bad settings.json) falls back to the defaults.
+  const list = Array.isArray(tags) ? tags : DEFAULT_TAGS;
+  const safe = list.filter((t) => typeof t === "string" && /^[A-Z0-9]+$/i.test(t));
   if (safe.length === 0) return [];
   const re = new RegExp(`\\b(${safe.join("|")})\\b[:\\s-]*(.*)$`);
   const out = [];

@@ -45,3 +45,13 @@ test("countByTag aggregates", () => {
 test("DEFAULT_TAGS exported", () => {
   expect(DEFAULT_TAGS).toContain("FIXME");
 });
+
+test("scanText falls back to defaults when tags is not an array", () => {
+  expect(scanText("// TODO x", "TODO" as any).length).toBe(1);
+  expect(scanText("// TODO x", null as any).length).toBe(1);
+});
+
+test("scanText ignores non-string entries in tags", () => {
+  const items = scanText("// TODO x\n// BUG y", [42, null, "BUG"] as any);
+  expect(items.map((i) => i.tag)).toEqual(["BUG"]);
+});

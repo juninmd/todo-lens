@@ -1,5 +1,5 @@
 const vscode = require("vscode");
-const { scanText } = require("./src/scan");
+const { scanText, countByTag } = require("./src/scan");
 
 /** TreeDataProvider backed by a scan of the active editor. */
 class TodoProvider {
@@ -50,8 +50,11 @@ function activate(context) {
 
   const update = () => {
     const n = provider.refresh();
-    status.text = `$(checklist) ${n} TODO${n === 1 ? "" : "s"}`;
-    status.tooltip = "todo-lens — clique para atualizar";
+    status.text = `$(checklist) ${n} ${n === 1 ? "item" : "itens"}`;
+    const byTag = Object.entries(countByTag(provider.items))
+      .map(([tag, c]) => `${tag}: ${c}`)
+      .join(", ");
+    status.tooltip = `todo-lens${byTag ? ` (${byTag})` : ""} — clique para atualizar`;
     status.show();
   };
 
@@ -66,6 +69,9 @@ function activate(context) {
     }),
     vscode.window.onDidChangeActiveTextEditor(update),
     vscode.workspace.onDidSaveTextDocument(update),
+    vscode.workspace.onDidChangeConfiguration((e) => {
+      if (e.affectsConfiguration("todoLens")) update();
+    }),
   );
 
   update();
